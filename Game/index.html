@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tiệm Mì Cay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="home-screen" class="screen">
+    <div class="home-bg">
+        <div class="home-stars">⭐⭐⭐⭐⭐</div>
+        <div class="home-logo">
+            <div class="logo-bowl">🍜</div>
+            <h1>Tiệm Mì Cay</h1>
+            <p class="logo-sub">Xe Đẩy Vỉa Hè</p>
+        </div>
+        <div class="home-desc">Trở thành chủ tiệm mì cay nổi tiếng nhất phố!</div>
+        <div class="home-guide">
+            <div class="guide-item"><span>🍲</span><p>Nấu mì đúng thời gian để mì dai ngon</p></div>
+            <div class="guide-item"><span>🌶️</span><p>Thêm topping & cấp cay theo yêu cầu khách</p></div>
+            <div class="guide-item"><span>💰</span><p>Kiếm tiền, nâng cấp quán, thuê nhân viên</p></div>
+        </div>
+        <button class="btn-home-start" onclick="startGame()">BẮT ĐẦU NGAY ▶</button>
+        <button class="btn-home-cont hidden" id="btn-continue" onclick="continueGame()">TIẾP TỤC ⏩</button>
+    </div>
+</div>
+
+<!-- ===== DAY COMPLETE SCREEN ===== -->
+<div id="day-complete-screen" class="screen hidden">
+    <div class="day-card">
+        <div class="day-card-emoji">🎉</div>
+        <h2 id="day-complete-title">Ngày 1 Hoàn Thành!</h2>
+        <div class="day-summary" id="day-summary"></div>
+        <div class="day-unlock" id="day-unlock"></div>
+        <button class="btn-home-start" onclick="nextDay()">SANG NGÀY MỚI ➡</button>
+    </div>
+</div>
+
+<!-- ===== MAIN GAME ===== -->
+<div id="game-screen" class="screen hidden">
+
+    <!-- TOP BAR -->
+    <header id="topbar">
+        <div class="topbar-left">
+            <button class="btn-pause" onclick="openShop()">⏸</button>
+            <div class="tb-day">
+                <span class="tb-day-label">Ngày <b id="current-day">1</b></span>
+                <span class="tb-time" id="day-timer">00:00</span>
+            </div>
+        </div>
+        <div class="tb-money">
+            <span>KẾT</span>
+            <b id="money-val">0₫</b>
+        </div>
+        <div class="topbar-right">
+            <div class="tb-stars">
+                <span id="stars-display">★★★★☆</span>
+                <small id="stars-val">4.0 • 0 đánh giá</small>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT: LEFT (Quán) + RIGHT (Bếp) -->
+    <div id="game-body">
+
+        <!-- LEFT: Khu vực quán (khách, biển hiệu) -->
+        <div id="shop-left">
+            <!-- Biển hiệu -->
+            <div class="shop-sign">
+                <div class="sign-title">Tiệm Mì Cay</div>
+                <div class="sign-sub">Xe Đẩy Vỉa Hè</div>
+            </div>
+
+            <!-- Hàng đợi khách -->
+            <div id="customer-area">
+                <!-- khách spawn ở đây -->
+            </div>
+
+            <!-- Bàn ghế -->
+            <div id="seats-area">
+                <div class="seat-row" id="seat-row">
+                    <!-- bàn sinh tự động -->
+                </div>
+            </div>
+
+            <!-- Bảng trạng thái khách đang đặt -->
+            <div id="active-order-banner" class="order-banner hidden">
+                <div class="order-banner-icon">🍜</div>
+                <div class="order-banner-text" id="order-banner-text">Khách đang gọi món...</div>
+                <div class="order-banner-bar"><div class="order-banner-fill" id="banner-patience"></div></div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Bếp -->
+        <div id="shop-right">
+
+            <!-- STATION: Nồi nấu mì (hàng trên) -->
+            <div class="station-row" id="pots-row">
+                <!-- "Lấy Tô" -->
+                <div class="station-item bowl-station" id="bowl-station" onclick="takeBowl()">
+                    <div class="si-icon">🍜</div>
+                    <div class="si-label">Lấy tô</div>
+                    <div class="si-count" id="bowl-count">25</div>
+                </div>
+                <!-- Nồi sinh tự động bằng JS -->
+            </div>
+
+            <!-- PREP AREA (trung tâm) -->
+            <div id="prep-area">
+                <div id="prep-bowl-display" class="prep-bowl empty" onclick="openBowlDetail()">
+                    <div class="prep-placeholder" id="prep-placeholder">Chưa có tô.<br><small>Chạm chồng tô để lấy.</small></div>
+                    <div class="prep-filled hidden" id="prep-filled">
+                        <div class="prep-noodle-status" id="prep-noodle-status">Mì: <b>Chưa có</b></div>
+                        <div class="prep-toppings" id="prep-toppings-display"></div>
+                        <div class="prep-spicy" id="prep-spicy-display">🌶️ Cấp cay: <b>0</b></div>
+                    </div>
+                </div>
+                <div id="prep-side">
+                    <div class="spicy-bottle" onclick="addSpicy()">
+                        <div class="spicy-count" id="spicy-badge">0</div>
+                        <div class="spicy-icon">🌶️</div>
+                        <div class="spicy-label">Sốt ớt</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div id="action-row">
+                <button class="btn-serve" id="btn-serve" onclick="serveOrder()">🍽 Giao món</button>
+                <button class="btn-trash" onclick="resetBowl()">🗑</button>
+                <button class="btn-ship hidden" id="btn-ship" onclick="sellShip()">📦</button>
+            </div>
+
+            <!-- TOPPING GRID (bên dưới) -->
+            <div class="topping-section">
+                <div class="topping-grid" id="topping-grid">
+                    <!-- Topping sinh tự động -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== SHOP MODAL ===== -->
+<div id="shop-modal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Nâng Cấp</h2>
+            <button class="modal-close" onclick="closeShop()">✕</button>
+        </div>
+        <div class="shop-tabs">
+            <button class="tab-btn active" onclick="switchTab('upgrades')">🛒 Cửa Hàng</button>
+            <button class="tab-btn" onclick="switchTab('employees')">👷 Nhân Viên</button>
+            <button class="tab-btn" onclick="switchTab('minigame')">🎮 Minigame</button>
+        </div>
+        <div class="tab-content" id="tab-upgrades"></div>
+        <div class="tab-content hidden" id="tab-employees"></div>
+        <div class="tab-content hidden" id="tab-minigame">
+            <div id="minigame-locked" class="minigame-locked">
+                <div style="font-size:50px">🔒</div>
+                <p>Mở khóa vào Ngày 10</p>
+            </div>
+            <div id="minigame-area" class="hidden">
+                <p style="text-align:center;">Click vào 🔨 búa nhanh nhất có thể trong <b id="hammer-time">10</b>s!</p>
+                <div class="hammer-score">Clicks: <b id="hammer-clicks">0</b></div>
+                <div id="hammer-stage"></div>
+                <button class="btn-home-start" id="btn-hammer" onclick="startHammer()">BẮT ĐẦU</button>
+            </div>
+        </div>
+        <button class="btn-home-start" onclick="closeShop()" style="margin-top:12px">Đóng</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
