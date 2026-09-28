@@ -19,20 +19,19 @@ Không vá tiếp file đã bị chèn alias. `game.js` được rebuild từ `o
 - remove global devtool/context-menu blocker;
 - thêm header mô tả build local.
 
-## Phần backend local được bổ sung
+## Kiến trúc hiện tại
 
-Game client gọi các endpoint sau:
+Runtime là static-only: không có server, endpoint, `fetch`, telemetry hay dịch vụ ngoài. Save và gameplay nằm trong trình duyệt; save envelope `MC2|base64(JSON)|checksum` được giữ nguyên.
 
-- `POST /api/ai`
-- `GET/POST /api/lb`
-- `GET/POST /api/chal`
-- `GET/POST /api/prank`
-
-`dev-server.mjs` cung cấp implementation local tương thích đủ để test UI/flow. Đây là backend mock phát triển, không phải production service.
+- Leaderboard online và prank multiplayer đã bị gỡ.
+- Thử thách là lượt chơi local theo ngày, không token, ranking hay submit điểm.
+- Trả lời đánh giá dùng PRNG seeded local.
+- Nhạc nền dùng Web Audio synthesizer local, không tải MP3.
+- `original/` là archive tham khảo, không được load bởi runtime.
 
 ## Chưa thể khẳng định chỉ bằng static check
 
 - Cân bằng gameplay ở mọi nhánh event ngẫu nhiên.
-- Hành vi audio MP3 thật vì archive không chứa thư mục music; game có fallback audio/synth khi tải nhạc lỗi.
+- Chất lượng nhạc tổng hợp có thể khác các bản MP3 trước đây.
 - Tương thích trình duyệt ở mọi phiên bản mobile.
-- Logic production server gốc của leaderboard/challenge/prank/AI, vì server source không nằm trong archive.
+- Tương thích trình duyệt ở mọi phiên bản mobile.
