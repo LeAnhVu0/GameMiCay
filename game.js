@@ -8858,7 +8858,11 @@
   }
   function bo() {
     if (i.chal) return Hh();
-    if (!i.run || i.paused) return;
+    if (!i.run) return;
+    if (i.paused) {
+      if (!d("modal").hidden) return;
+      i.paused = !1;
+    }
     const A = 0.1,
       n = !!i.tut;
     if (!n) {
@@ -9026,9 +9030,8 @@
       i.otT >= yo && ui());
   }
   function GA() {
-    !i.run ||
-      i.paused ||
-      ((i.paused = !0),
+    if (!i.run || (i.paused && !d("modal").hidden)) return;
+    ((i.paused = !0),
       E(
         `<h2>Tạm dừng</h2><p>Khách và nồi mì đang đứng yên chờ bạn.</p>${co()}${i.chal ? "" : la()}`,
         [
@@ -9271,8 +9274,7 @@
           : null),
       Q(),
       (i.mode = "prep"),
-      document.body.classList.remove("selling"),
-      P || fi());
+      document.body.classList.remove("selling"));
     const O = !P && o.ev ? o.ev : null,
       yA = Pe(),
       DA = () => {
@@ -9304,7 +9306,6 @@
                 ai(j),
                 Y && ((o.best = Math.max(o.best, U)), o.day++, ca(o.day)),
                 Q(),
-                fi(),
                 (i.tab = "kho"),
                 (i.plan = {}),
                 Ot(),
